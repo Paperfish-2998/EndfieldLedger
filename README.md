@@ -7,10 +7,6 @@ GitHub: https://github.com/Paperfish-2998
 
 一个 PowerShell 脚本，根据《明日方舟：终末地》养成需求与玩家当前实际拥有材料，统计干员培养资源概况，并按缺口给出刷取规划。
 
-<div align="center">
-  <img src="assets/program_view.png" alt="Program View" width="640" />
-</div>
-
 ## 文件说明
 
 | 文件                        | 说明                            |
@@ -58,7 +54,11 @@ GitHub: https://github.com/Paperfish-2998
 
 本工具为本地离线计算脚本，不读取、不修改、不干预游戏客户端与游戏数据。使用本工具产生的任何后果由使用者自行承担，作者不对账号安全作任何保证。
 
+---
 
+<div align="center">
+  <img src="assets/program_view.png" alt="Program View" width="640" />
+</div>
 
 ---
 
