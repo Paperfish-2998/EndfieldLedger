@@ -1,4 +1,4 @@
-﻿<#
+<#
 ================================================================================
   明日方舟：终末地 —— 资源概况与刷取规划工具
 ================================================================================
@@ -535,7 +535,7 @@ function Show-Report {
 
     # ==== 刷取规划：自动升阶到下一名干员 ====
     Write-C '  【刷取规划】' Yellow
-    Write-C '    按缺口从高到低' DarkGray
+    Write-C '    按理智需求从高到低' DarkGray
     NL
 
     $ownerCount = 0   # 已完整满足的干员数
@@ -553,7 +553,16 @@ function Show-Report {
                 $rate = 0.0
                 $rv = $Config.farmRates.$m
                 if ($null -ne $rv) { $rate = [double]$rv }
-                $candidate += [pscustomobject]@{ Name = $m; Gap = $gap; Rate = $rate; Unit = (Get-Unit $m) }
+                $runs = if ($rate -gt 0) { [int][Math]::Ceiling($gap / $rate) } else { 0 }
+                $sanity = $runs * 80
+                $candidate += [pscustomobject]@{
+                    Name   = $m
+                    Gap    = $gap
+                    Rate   = $rate
+                    Unit   = (Get-Unit $m)
+                    Runs   = $runs
+                    Sanity = $sanity
+                }
             }
         }
         if ($candidate.Count -eq 0) {
@@ -562,7 +571,8 @@ function Show-Report {
             continue
         } else {
             $gapTier = $nextCount
-            $rows = @($candidate | Sort-Object Gap -Descending)
+            # 按理智需求从高到低排序；理智相同则按缺口降序
+            $rows = @($candidate | Sort-Object -Property Sanity, Gap -Descending)
             break
         }
     }
@@ -583,8 +593,8 @@ function Show-Report {
         $gapColor = if ($gapTier -ge 2) { [System.ConsoleColor]::DarkYellow } else { [System.ConsoleColor]::Red }
         foreach ($r in $rows) {
             $rank++
-            $runs   = if ($r.Rate -gt 0) { [int][Math]::Ceiling($r.Gap / $r.Rate) } else { 0 }
-            $sanity = $runs * 80
+            $runs   = $r.Runs
+            $sanity = $r.Sanity
             $totalRuns += $runs
             Write-C ('  {0,2}. ' -f $rank) Yellow
             Write-C (Pad-Display $r.Name $NameWidth) White
